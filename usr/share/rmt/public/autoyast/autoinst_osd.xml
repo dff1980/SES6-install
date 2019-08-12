@@ -1,0 +1,278 @@
+<?xml version="1.0"?>
+<!DOCTYPE profile>
+<profile xmlns="http://www.suse.com/1.0/yast2ns" xmlns:config="http://www.suse.com/1.0/configns">
+<scripts>
+    <chroot-scripts config:type="list">
+      <script>
+        <chrooted config:type="boolean">true</chrooted>
+        <filename>set_salt_master.sh</filename>
+        <interpreter>shell</interpreter>
+        <source><![CDATA[
+        #!/bin/sh
+        echo "master: ses-admin.ses6.suse.ru" > /etc/salt/minion.d/minion.conf
+        ]]>
+        </source>
+      </script>
+      <script>
+        <chrooted config:type="boolean">true</chrooted>
+        <filename>set_fqdn_hostname.sh</filename>
+        <interpreter>shell</interpreter>
+        <source><![CDATA[
+        #!/bin/sh
+        echo "$(ip a | grep -A1 eth0 | grep inet | sed 's/\s*inet\s*\(.*\)\/..\sbrd.*/\1/') $(hostname).ses6.suse.ru $(hostname)" >> /etc/hosts
+        ]]>
+        </source>
+      </script>
+    </chroot-scripts>
+  </scripts>
+  <bootloader>
+    <global>
+      <activate>true</activate>
+
+      <boot_boot>false</boot_boot>
+      <boot_extended>false</boot_extended>
+      <boot_mbr>true</boot_mbr>
+      <boot_root>true</boot_root>
+      <generic_mbr>true</generic_mbr>
+      <gfxmode>auto</gfxmode>
+      <hiddenmenu>false</hiddenmenu>
+      <os_prober>false</os_prober>
+      <terminal>gfxterm</terminal>
+      <timeout config:type="integer">8</timeout>
+      <trusted_grub>false</trusted_grub>
+
+    </global>
+    <loader_type>grub2</loader_type>
+  </bootloader>
+  <deploy_image>
+    <image_installation config:type="boolean">false</image_installation>
+  </deploy_image>
+  <firewall>
+    <default_zone>public</default_zone>
+    <enable_firewall config:type="boolean">false</enable_firewall>
+    <log_denied_packets>off</log_denied_packets>
+    <start_firewall config:type="boolean">false</start_firewall>
+  </firewall>
+
+  <general>
+    <ask-list config:type="list"/>
+    <mode>
+      <confirm config:type="boolean">false</confirm>
+    </mode>
+    <proposals config:type="list"/>
+    <signature-handling>
+      <accept_file_without_checksum config:type="boolean">true</accept_file_without_checksum>
+      <accept_non_trusted_gpg_key config:type="boolean">true</accept_non_trusted_gpg_key>
+      <accept_unknown_gpg_key config:type="boolean">true</accept_unknown_gpg_key>
+      <accept_unsigned_file config:type="boolean">true</accept_unsigned_file>
+      <accept_verification_failed config:type="boolean">false</accept_verification_failed>
+      <import_gpg_key config:type="boolean">true</import_gpg_key>
+    </signature-handling>
+    <storage>
+      <start_multipath config:type="boolean">false</start_multipath>
+    </storage>
+  </general>
+  <keyboard>
+    <keymap>english-us</keymap>
+  </keyboard>
+  <language>
+    <language>en_US</language>
+    <languages/>
+  </language>
+  <login_settings/>
+  <networking>
+    <dhcp_options>
+      <dhclient_client_id/>
+      <dhclient_hostname_option>AUTO</dhclient_hostname_option>
+    </dhcp_options>
+    <dns>
+      <dhcp_hostname config:type="boolean">true</dhcp_hostname>
+      <domain>suse</domain>
+      <hostname>linux-rvrd</hostname>
+      <resolv_conf_policy>auto</resolv_conf_policy>
+      <write_hostname config:type="boolean">false</write_hostname>
+    </dns>
+    <interfaces config:type="list">
+      <interface>
+        <bootproto>dhcp</bootproto>
+        <device>eth0</device>
+        <startmode>auto</startmode>
+      </interface>
+      <interface>
+        <bootproto>static</bootproto>
+        <device>lo</device>
+        <firewall>no</firewall>
+        <ipaddr>127.0.0.1</ipaddr>
+        <netmask>255.0.0.0</netmask>
+        <network>127.0.0.0</network>
+        <prefixlen>8</prefixlen>
+        <startmode>nfsroot</startmode>
+        <usercontrol>no</usercontrol>
+      </interface>
+    </interfaces>
+    <ipv6 config:type="boolean">false</ipv6>
+    <keep_install_network config:type="boolean">true</keep_install_network>
+    <managed config:type="boolean">false</managed>
+    <routing>
+      <ipv4_forward config:type="boolean">false</ipv4_forward>
+      <ipv6_forward config:type="boolean">false</ipv6_forward>
+    </routing>
+  </networking>
+  <ntp-client>
+    <ntp_policy>auto</ntp_policy>
+    <ntp_servers config:type="list">
+      <ntp_server>
+        <address>ses-admin.ses6.suse.ru</address>
+        <iburst config:type="boolean">true</iburst>
+        <offline config:type="boolean">false</offline>
+      </ntp_server>
+    </ntp_servers>
+    <ntp_sync>systemd</ntp_sync>
+  </ntp-client>
+  <partitioning config:type="list">
+    <drive>
+      <device>/dev/sda</device>
+      <disklabel>gpt</disklabel>
+      <enable_snapshots config:type="boolean">true</enable_snapshots>
+      <initialize config:type="boolean">true</initialize>
+      <partitions config:type="list">
+        <partition>
+          <create config:type="boolean">true</create>
+          <crypt_fs config:type="boolean">false</crypt_fs>
+          <filesystem config:type="symbol">swap</filesystem>
+          <format config:type="boolean">true</format>
+          <fstopt>defaults</fstopt>
+          <loop_fs config:type="boolean">false</loop_fs>
+          <mount>swap</mount>
+          <mountby config:type="symbol">uuid</mountby>
+          <partition_id config:type="integer">130</partition_id>
+          <partition_nr config:type="integer">1</partition_nr>
+          <resize config:type="boolean">false</resize>
+          <size>auto</size>
+        </partition>
+        <partition>
+          <create config:type="boolean">true</create>
+          <crypt_fs config:type="boolean">false</crypt_fs>
+          <filesystem config:type="symbol">ext4</filesystem>
+          <format config:type="boolean">true</format>
+          <fstopt>acl,user_xattr</fstopt>
+          <loop_fs config:type="boolean">false</loop_fs>
+          <mount>/</mount>
+          <mountby config:type="symbol">uuid</mountby>
+          <partition_id config:type="integer">131</partition_id>
+          <partition_nr config:type="integer">2</partition_nr>
+          <resize config:type="boolean">false</resize>
+          <size>max</size>
+        </partition>
+      </partitions>
+      <type config:type="symbol">CT_DISK</type>
+      <use>all</use>
+    </drive>
+  </partitioning>
+  <proxy>
+    <enabled config:type="boolean">false</enabled>
+    <ftp_proxy/>
+    <http_proxy/>
+    <https_proxy/>
+    <no_proxy>localhost, 127.0.0.1</no_proxy>
+    <proxy_password/>
+    <proxy_user/>
+  </proxy>
+  <report>
+    <errors>
+      <log config:type="boolean">true</log>
+      <show config:type="boolean">true</show>
+      <timeout config:type="integer">0</timeout>
+    </errors>
+    <messages>
+      <log config:type="boolean">true</log>
+      <show config:type="boolean">true</show>
+      <timeout config:type="integer">0</timeout>
+    </messages>
+    <warnings>
+      <log config:type="boolean">true</log>
+      <show config:type="boolean">true</show>
+      <timeout config:type="integer">0</timeout>
+    </warnings>
+    <yesno_messages>
+      <log config:type="boolean">true</log>
+      <show config:type="boolean">true</show>
+      <timeout config:type="integer">0</timeout>
+    </yesno_messages>
+  </report>
+  <software>
+    <image/>
+    <install_recommended config:type="boolean">true</install_recommended>
+    <instsource/>
+    <packages config:type="list">
+      <package>sles-release</package>
+      <package>ses-release</package>
+      <package>salt-minion</package>
+      <package>sle-module-server-applications-release</package>
+      <package>sle-module-basesystem-release</package>
+    </packages>
+    <patterns config:type="list">
+      <pattern>apparmor</pattern>
+      <pattern>base</pattern>
+      <pattern>enhanced_base</pattern>
+      <pattern>minimal_base</pattern>
+      <pattern>yast2_basis</pattern>
+    </patterns>
+    <products config:type="list">
+      <product>SLES</product>
+    </products>
+  </software>
+  <ssh_import>
+    <copy_config config:type="boolean">false</copy_config>
+    <import config:type="boolean">false</import>
+  </ssh_import>
+  <timezone>
+    <hwclock>UTC</hwclock>
+    <timezone>Europe/Moscow</timezone>
+  </timezone>
+  <users config:type="list">
+    <user>
+      <encrypted config:type="boolean">true</encrypted>
+      <fullname>root</fullname>
+      <gid>0</gid>
+      <home>/root</home>
+      <password_settings>
+        <expire/>
+        <flag/>
+        <inact/>
+        <max/>
+        <min/>
+        <warn/>
+      </password_settings>
+      <shell>/bin/bash</shell>
+      <uid>0</uid>
+      <user_password>$6$jIXJQpp8fZte$doPY5EKxAZInelajOCJpOuHcDFtzdhjgy3PxcV1W7xvSqqXAmf0du.YQ/zqVdNJGYHjHLmgWgLUEQK7t8b4fI/</user_password>
+      <username>root</username>
+    </user>
+  </users>
+  <suse_register>
+    <do_registration config:type="boolean">true</do_registration>
+    <install_updates config:type="boolean">true</install_updates>
+    <slp_discovery config:type="boolean">false</slp_discovery>
+      <reg_server>https://ses-admin.ses6.suse.ru</reg_server>
+      <reg_server_cert_fingerprint_type>SHA256</reg_server_cert_fingerprint_type>
+      <reg_server_cert_fingerprint>6C:FE:B0:FB:05:B9:89:82:0D:80:77:B3:05:B1:C5:5D:17:1B:F7:91:33:FA:21:C8:22:D4:D1:83:E1:18:47:02</reg_server_cert_fingerprint>
+    <addons config:type="list">
+      <addon>
+      <name>ses</name>
+      <version>6</version>
+      <arch>x86_64</arch>
+      </addon>
+      <addon>
+      <name>sle-module-server-applications</name>
+      <version>15-SP1</version>
+      <arch>x86_64</arch>
+      </addon>
+      <addon>
+      <name>sle-module-basesystem</name>
+      <version>15-SP1</version>
+      <arch>x86_64</arch>
+      </addon>
+      </addons>
+  </suse_register>
+</profile>

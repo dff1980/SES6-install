@@ -1,0 +1,14 @@
+$TTL 2D
+@               IN SOA          ses-admin.ses6.suse.ru. root.ses-admin.ses6.suse.ru. (
+                                2019031800      ; serial
+                                3H              ; refresh
+                                1H              ; retry
+                                1W              ; expiry
+                                1D )            ; minimum
+
+15.168.192.in-addr.arpa.        IN NS           ses6.suse.ru.
+21.15.168.192.in-addr.arpa.     IN PTR          osd-01.ses6.suse.ru.
+22.15.168.192.in-addr.arpa.     IN PTR          osd-02.ses6.suse.ru.
+23.15.168.192.in-addr.arpa.     IN PTR          osd-03.ses6.suse.ru.
+24.15.168.192.in-addr.arpa.     IN PTR          osd-04.ses6.suse.ru.
+25.15.168.192.in-addr.arpa.     IN PTR          osd-05.ses6.suse.ru.

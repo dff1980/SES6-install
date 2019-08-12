@@ -1,0 +1,16 @@
+default vesamenu.c32
+prompt 0
+timeout 50
+
+menu title PXE Install Server
+menu background background.jpg
+
+label harddisk
+  menu label Local Hard Disk
+  localboot 0
+
+label install-osd-node
+  menu label OSD Node
+  kernel sle15sp1/linux
+  append load ramdisk=1 initrd=sle15sp1/initrd netsetup=dhcp install=http://ses-admin.ses6.suse.ru/repo/SUSE/Install/SLE-SERVER/15-SP1/ autoyast=http://ses-admin.ses6.suse.ru/autoyast/autoinst_osd.xml
+
