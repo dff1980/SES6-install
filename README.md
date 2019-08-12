@@ -1,10 +1,10 @@
-# SUSE Enterprise Storage 5 2019 PoC
+# SUSE Enterprise Storage 6 2019 PoC
 
-This project is PoC installation SUSE Enterprise Storage 5.
+This project is PoC installation SUSE Enterprise Storage 6.
 
 Using version:
-- SES 5
-- SLES 12 SP3
+- SES 6
+- SLES 15 SP1
 
 This document currently in development state. Any comments and additions are welcome.
 If you need some additional information about it please contact with Pavel Zhukov (pavel.zhukov@suse.com).
@@ -46,18 +46,13 @@ Infrastructure server also connects to WAN.
 
 ## Instalation Procedure
 ### Install infrastructure server
-#### 1. Install SLES12 SP3
-#### 2. Add FQDN to /etc/hosts
-Hostname=admin.ses5.suse.ru
+#### 1. Install SLES15 SP1
 
-Exaple change:
-_192.168.15.254 admin_
-to
-_192.168.15.254 admin.ses5.suse.ru admin_
-or (for eth1 LAN interface)
-```bash
-echo "$(ip a | grep -A1 eth1 | grep inet | sed 's/\s*inet\s*\(.*\)\/..\sbrd.*/\1/') $(hostname).ses5.suse.ru $(hostname)" >> /etc/hosts
-```
+#### 2. Configure lan card 
+
+##### Add FQDN to /etc/hosts (enter to hostname in eth1 interface)
+Hostname=ses-admin.ses6.suse.ru
+
 #### 3. Configure NTP.
 ```bash
 yast2 ntp-client
@@ -67,30 +62,34 @@ yast2 ntp-client
 yast2 firewall
 ```
 #### 5. Configure SMT.
-Execute SMT configuration wizard. During the server certificate setup, all possible DNS for this server has been added (SMT FQDN, etc).
-Add repositories to replication.
 ```bash
-sudo zypper in -t pattern smt
+sudo zypper in rmt-server
+```
+Execute RMT configuration wizard. During the server certificate setup, all possible DNS for this server has been added (RMT FQDN, etc).
+Add repositories to replication.
 
-for REPO in SLES12-SP3-{Pool,Updates} SUSE-Enterprise-Storage-5-{Pool,Updates}; do
-  smt-repos $REPO sle-12-x86_64 -e
-done
+```bash
 
-smt-mirror -L /var/log/smt/smt-mirror.log
+rmt-cli sync
+
+repos=$(rmt-cli repos list --all); for REPO in SLE-Product-SLES15-SP1-{Pool,Updates} SLE-Module-Server-Applications15-SP1-{Pool,Updates} SLE-Module-Basesystem15-SP1-{Pool,Updates} SUSE-Enterprise-Storage-6-{Pool,Updates}; do  rmt-cli repos enable $(echo "$repos" | grep "$REPO for sle-15-x86_64" | sed "s/^|\s\+\([0-9]*\)\s\+|.*/\1/"); done
+
+
+rmt-cli mirror 
 ```
 Download next distro:
-- SLE-12-SP3-Server-DVD-x86_64-GM-DVD1.iso
+- SLE-15-SP1-Installer-DVD-x86_64-GM-DVD1.iso
 
 Create install repositories:
 
 ```bash
-mkdir -p /srv/www/htdocs/repo/SUSE/Install/SLE-SERVER/12-SP3
+mkdir -p /usr/share/rmt/public/repo/SUSE/Install/SLE-SERVER/15-SP1/
 
-mkdir -p /srv/tftpboot/sle12sp3
+mkdir -p /srv/tftpboot/sle15sp1
 
-mount SLE-12-SP3-Server-DVD-x86_64-GM-DVD1.iso /mnt
-rsync -avP /mnt/ /srv/www/htdocs/repo/SUSE/Install/SLE-SERVER/12-SP3/x86_64/
-cp /mnt/boot/x86_64/loader/{linux,initrd} /srv/tftpboot/sle12sp3/
+mount SLE-15-SP1-Installer-DVD-x86_64-GM-DVD1.iso /mnt
+rsync -avP /mnt/ /usr/share/rmt/public/repo/SUSE/Install/SLE-SERVER/15-SP1/
+cp /mnt/boot/x86_64/loader/{linux,initrd} /srv/tftpboot/sle15sp1/
 umount /mnt
 
 ```
@@ -101,7 +100,7 @@ zypper in -t pattern dhcp_dns_server
 ```
 
 #### Configure DHCP
-Put file [/etc/dhcpd.conf](data/etc/dhcpd.conf) to the server.
+Put file [/etc/dhcpd.conf](etc/dhcpd.conf) to the server.
 
 Set interface in /etc/sysconfig/dhcpd
 ```
@@ -118,15 +117,15 @@ systemctl start dhcpd.service
 
 Configure zone for PoC and all nodes.
 
-Put file zone [/var/lib/named/master/ses5.suse.ru](data/var/lib/named/master/ses5.suse.ru) to the server.
-Put file zone [/var/lib/named/master/20.168.192.in-addr.arpa](data/var/lib/named/master/20.168.192.in-addr.arpa) to the server.
+Put file zone [/var/lib/named/master/ses6.suse.ru](var/lib/named/master/ses6.suse.ru) to the server.
+Put file zone [/var/lib/named/master/20.168.192.in-addr.arpa](var/lib/named/master/20.168.192.in-addr.arpa) to the server.
 
 Add description in /etc/named.conf
 
 ```
-zone "ses5.suse.ru" in {
+zone "ses6.suse.ru" in {
         allow-transfer { any; };
-        file "master/ses5.suse.ru";
+        file "master/ses6.suse.ru";
         type master;
 };
 zone "15.168.192.in-addr.arpa" in {
@@ -149,19 +148,26 @@ yast2 tftp-server
 ```
 or add to autostart xntpd and configure tfpfd
 
-Copy [/srv/tftpboot/*](data/srv/tftpboot/) to server.
+Copy [/srv/tftpboot/*](srv/tftpboot/) to server.
 
 ## Install SES
 ### 1. Stop firewall at Infrastructure server at installing SES time.
 ```bash
-systemctl stop SuSEfirewall2
+systemctl stop firewalld
 ```
 ### 2. Configure AutoYast
-Put [/srv/www/htdocs/autoyast/autoinst_osd.xml](data/srv/www/htdocs/autoyast/autoinst_osd.xml) to the server.
+```bash
+mkdir /usr/share/rmt/public/autoyast
+```
 
+Put [/usr/share/rmt/public/autoyast/autoinst_osd.xml](srv/www/htdocs/autoyast/autoinst_osd.xml) to the server.
+
+````bash
+chown -R _rmt:nginx autoyast
+```
 get AutoYast Fingerprint
 
-openssl x509 -noout -fingerprint -sha256 -inform pem -in /srv/www/htdocs/smt.crt
+openssl x509 -noout -fingerprint -sha256 -inform pem -in /etc/rmt/ssl/rmt-ca.crt
 
 Change /srv/www/htdocs/autoyast/autoinst_osd.xml Add
 
@@ -170,6 +176,16 @@ to <suse_register>
 <reg_server>https://smt.sdh.suse.ru</reg_server> <reg_server_cert_fingerprint_type>SHA256</reg_server_cert_fingerprint_type> 
 
 <reg_server_cert_fingerprint>YOUR SMT FINGERPRINT</reg_server_cert_fingerprint>
+
+Add to /etc/nginx/vhosts.d/rmt-server-http.conf
+```
+    location /autoyast {
+        autoindex on;
+    }
+```
+```bash
+systemctl restart nginx
+```
 
 ### 3. Install SES Nodes
 Boot all SES Node from PXE and chose "Install OSD Node" from PXE boot menu.
