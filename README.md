@@ -162,13 +162,14 @@ mkdir /usr/share/rmt/public/autoyast
 
 Put [/usr/share/rmt/public/autoyast/autoinst_osd.xml](srv/www/htdocs/autoyast/autoinst_osd.xml) to the server.
 
-````bash
+```bash
 chown -R _rmt:nginx autoyast
 ```
 get AutoYast Fingerprint
 
+```bash
 openssl x509 -noout -fingerprint -sha256 -inform pem -in /etc/rmt/ssl/rmt-ca.crt
-
+```
 Change /srv/www/htdocs/autoyast/autoinst_osd.xml Add
 
 to <suse_register>
