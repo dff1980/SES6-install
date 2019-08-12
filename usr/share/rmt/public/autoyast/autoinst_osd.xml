@@ -250,6 +250,16 @@
       <username>root</username>
     </user>
   </users>
+    <services-manager>
+        <default_target>multi-user</default_target>
+            <services>
+              <disable config:type="list"/>
+              <enable config:type="list">
+                <service>sshd</service>
+                <service>salt-minion</service>
+              </enable>
+            </services>
+    </services-manager>
   <suse_register>
     <do_registration config:type="boolean">true</do_registration>
     <install_updates config:type="boolean">true</install_updates>
@@ -265,12 +275,12 @@
       </addon>
       <addon>
       <name>sle-module-server-applications</name>
-      <version>15-SP1</version>
+      <version>15.1</version>
       <arch>x86_64</arch>
       </addon>
       <addon>
       <name>sle-module-basesystem</name>
-      <version>15-SP1</version>
+      <version>15.1</version>
       <arch>x86_64</arch>
       </addon>
       </addons>
