@@ -302,6 +302,11 @@ mount -t ceph serverhost:/ mountpoint -o name=foo,secret=`ceph-authtool -p -n cl
 
 #### firewalld
 firewall-cmd --permanent --zone=external --add-forward-port=port=8443:proto=tcp:toport=8443:toaddr=192.168.15.21
+firewall-cmd --permanent --zone=external --add-port=8443/tcp
+
+firewall-cmd --permanent --zone=dmz --add-masquerade
+firewall-cmd --permanent --zone=public --remove-interface=ens34
+firewall-cmd --permanent --zone=internal --add-interface=ens34
 
 #### JeOS
 SUSEConnect -s
