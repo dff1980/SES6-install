@@ -160,9 +160,10 @@ systemctl stop firewalld
 mkdir /usr/share/rmt/public/autoyast
 ```
 
-Put [/usr/share/rmt/public/autoyast/autoinst_osd.xml](srv/www/htdocs/autoyast/autoinst_osd.xml) to the server.
+Put [/usr/share/rmt/public/autoyast/autoinst_osd.xml](usr/share/rmt/public/autoyast/autoinst_osd.xml) to the server.
 
 ```bash
+cd /usr/share/rmt/public/
 chown -R _rmt:nginx autoyast
 ```
 get AutoYast Fingerprint
@@ -225,12 +226,16 @@ salt-run state.orch ceph.stage.4
 
 ### 5. Start firewall at Infrastructure Server
 ```bash
-systemctl start SuSEfirewall2
+systemctl start firewalld
 ```
+### 6. Dashboard
+ceph mgr services | grep dashboard
+salt-call grains.get dashboard_creds
+
 
 ## Configure SUSE CaaSP and SES integration
 
-1. Add rbd pool (you can use OpenAttic Web interface at infrastructure node)
+1. Add rbd pool (you can use Dashboard)
 
 2. Retrieve the Ceph admin secret. Get the key value from the file /etc/ceph/ceph.client.admin.keyring.
 
@@ -271,7 +276,7 @@ https://www.suse.com/documentation/suse-enterprise-storage-5/
 https://www.suse.com/documentation/suse-caasp-3/index.html
 
 ## Appendix A
-To prevent some error(warning) message specify ipv6 for hostname
+-To prevent some error(warning) message specify ipv6 for hostname-
 
 To pretty out ussing
 ```bash
@@ -294,3 +299,30 @@ ceph-authtool -l keyring
 When mount a Ceph file system, you can grab the appropriately encoded secret key with:
 
 mount -t ceph serverhost:/ mountpoint -o name=foo,secret=`ceph-authtool -p -n client.foo keyring`
+
+#### firewalld
+firewall-cmd --permanent --zone=external --add-forward-port=port=8443:proto=tcp:toport=8443:toaddr=192.168.15.21
+
+#### JeOS
+SUSEConnect -s
+ip a a 172.17.149.41/24 via eth0
+ip link set up eth0
+ip ro add default via 172.17.149.254
+echo nameserver IP >> /etc/resolv.conf
+SUSEConnect -r REGCODE
+SUSEConnect -s
+SUSEConnect --list-extensions
+zypper lr
+zypper in iputils
+zypper in yast2-registration
+zypper in yast2-network
+yast2 lan
+
+zypper in -y git-core
+git clone http://github.com/dff1980/SES6-install
+
+SUSEConnect -p PackageHub/15.1/x86_64
+zypper in -y mc
+zypper in -y autoyast2
+zypper in -y bash-completion
+
