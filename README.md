@@ -307,6 +307,12 @@ firewall-cmd --permanent --zone=external --add-port=8443/tcp
 firewall-cmd --permanent --zone=dmz --add-masquerade
 firewall-cmd --permanent --zone=public --remove-interface=ens34
 firewall-cmd --permanent --zone=internal --add-interface=ens34
+firewall-cmd --permanent --remove-port=80/tcp
+firewall-cmd --reload
+firewall-cmd --complete-reload
+
+save to permanent
+firewall-cmd --runtime-to-permanent
 
 #### JeOS
 SUSEConnect -s
