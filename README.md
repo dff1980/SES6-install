@@ -327,6 +327,7 @@ firewall-cmd --complete-reload
 ```
 
 #### JeOS
+```bash
 SUSEConnect -s
 ip a a 172.17.149.41/24 via eth0
 ip link set up eth0
@@ -348,4 +349,4 @@ SUSEConnect -p PackageHub/15.1/x86_64
 zypper in -y mc
 zypper in -y autoyast2
 zypper in -y bash-completion
-
+```
