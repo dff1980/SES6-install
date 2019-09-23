@@ -226,12 +226,16 @@ salt-run state.orch ceph.stage.4
 
 ### 5. Start firewall at Infrastructure Server
 ```bash
+yast2 firewall
 systemctl start firewalld
+firewall-cmd --permanent --zone=internal --set-target=ACCEPT
+firewall-cmd --reload
 ```
 ### 6. Dashboard
+```bash
 ceph mgr services | grep dashboard
 salt-call grains.get dashboard_creds
-
+```
 
 ## Configure SUSE CaaSP and SES integration
 
@@ -324,6 +328,9 @@ firewall-cmd --permanent --zone=internal --add-interface=ens34
 firewall-cmd --permanent --remove-port=80/tcp
 firewall-cmd --reload
 firewall-cmd --complete-reload
+
+firewall-cmd --permanent --zone=internal --set-target=ACCEPT
+firewall-cmd --reload
 ```
 
 #### JeOS
