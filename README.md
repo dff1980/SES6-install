@@ -321,6 +321,7 @@ firewall-cmd --runtime-to-permanent
 Example:
 ```bash
 firewall-cmd --permanent --zone=external --add-forward-port=port=8443:proto=tcp:toport=8443:toaddr=192.168.15.21
+firewall-cmd --permanent --zone=external --remove-forward-port=port=8443:proto=tcp:toport=8443:toaddr=192.168.15.21
 firewall-cmd --permanent --zone=external --add-port=8443/tcp
 firewall-cmd --permanent --zone=dmz --add-masquerade
 firewall-cmd --permanent --zone=public --remove-interface=ens34
@@ -328,6 +329,8 @@ firewall-cmd --permanent --zone=internal --add-interface=ens34
 firewall-cmd --permanent --remove-port=80/tcp
 firewall-cmd --reload
 firewall-cmd --complete-reload
+
+firewall-cmd --permanent --list-all --zone=internal
 
 firewall-cmd --permanent --zone=internal --set-target=ACCEPT
 firewall-cmd --reload
