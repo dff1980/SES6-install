@@ -171,7 +171,7 @@ get AutoYast Fingerprint
 ```bash
 openssl x509 -noout -fingerprint -sha256 -inform pem -in /etc/rmt/ssl/rmt-ca.crt
 ```
-Change /srv/www/htdocs/autoyast/autoinst_osd.xml Add
+Change /usr/share/rmt/public/autoyast/autoinst_osd.xml Add
 
 to <suse_register>
 
