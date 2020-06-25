@@ -308,7 +308,7 @@ mount -t ceph serverhost:/ mountpoint -o name=foo,secret=`ceph-authtool -p -n cl
 
 Masquerading can be done from the command line:
 ```bash
-irewall-cmd --zone=internal --add-masquerade
+firewall-cmd --zone=internal --add-masquerade
 ```
 Port forwarding:
 ```bash
