@@ -194,6 +194,10 @@ Boot all SES Node from PXE and chose "Install OSD Node" from PXE boot menu.
 
 ### 4. Configure SES
 1. Start [data/ses-install/start.sh](data/ses-install/start.sh) at infrastructure server.
+run at separate console a deepsea monitor
+```bash
+deepsea monitor
+```
 2. Run
 ```bash
 salt-run state.orch ceph.stage.0
