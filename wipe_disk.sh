@@ -15,7 +15,7 @@ do
 
   #Wipe the beginning of the drive:
   dd if=/dev/zero of=/dev/${device} bs=512 count=34 oflag=direct
-  dd if=/dev/zero of=/dev/${device} bs=512 count=33 seek=$((`blockdev --getsz /dev/sdX` - 33)) oflag=direct
+  dd if=/dev/zero of=/dev/${device} bs=512 count=33 seek=$((`blockdev --getsz /dev/${device}` - 33)) oflag=direct
 
   #Create a new GPT partition table
 
