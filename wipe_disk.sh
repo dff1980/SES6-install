@@ -19,6 +19,6 @@ do
 
   #Create a new GPT partition table
 
-  sgdisk -Z --clear -g /dev/${device}
+  #sgdisk -Z --clear -g /dev/${device}
 done
 
