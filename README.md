@@ -152,11 +152,9 @@ Copy [/srv/tftpboot/*](srv/tftpboot/) to server.
 
 ## Install SES
 ### 1. Stop firewall at Infrastructure server at installing SES time.
-???
 ```bash
 systemctl stop firewalld
 ```
-???
 ### 2. Configure AutoYast
 ```bash
 mkdir /usr/share/rmt/public/autoyast
@@ -195,9 +193,11 @@ systemctl restart nginx
 Boot all SES Node from PXE and chose "Install OSD Node" from PXE boot menu.
 
 ### 4. Configure SES
+???
 ```bash
 zypper in deepsea-cli
 ```
+???
 1. Start [data/ses-install/start.sh](data/ses-install/start.sh) at infrastructure server.
 run at separate console a deepsea monitor
 ```bash
