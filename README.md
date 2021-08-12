@@ -152,9 +152,11 @@ Copy [/srv/tftpboot/*](srv/tftpboot/) to server.
 
 ## Install SES
 ### 1. Stop firewall at Infrastructure server at installing SES time.
+???
 ```bash
 systemctl stop firewalld
 ```
+???
 ### 2. Configure AutoYast
 ```bash
 mkdir /usr/share/rmt/public/autoyast
