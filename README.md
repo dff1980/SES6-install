@@ -193,12 +193,13 @@ systemctl restart nginx
 Boot all SES Node from PXE and chose "Install OSD Node" from PXE boot menu.
 
 ### 4. Configure SES
+1. Start [data/ses-install/start.sh](data/ses-install/start.sh) at infrastructure server.
+
 ???
 ```bash
 zypper in deepsea-cli
 ```
 ???
-1. Start [data/ses-install/start.sh](data/ses-install/start.sh) at infrastructure server.
 
 run at separate console a deepsea monitor
 ```bash
